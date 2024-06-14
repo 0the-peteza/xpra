@@ -52,6 +52,72 @@ To contribute to the project, please try to use pull-requests and follow our [co
 Unit test status:
 [![xpra](https://github.com/Xpra-org/xpra/actions/workflows/test.yml/badge.svg)](https://github.com/Xpra-org/xpra/actions/workflows/test.yml)
 
+### alternate build instructions
+
+On OpenSuSe, I manually install these dependencies:
+
+| pkg-mgmt|packages|
+|-:|:-:|
+| zypper | ibus-gtk3 gtkmm3-devel gtk3-devel gtk3-devel-doc liblz4-devel lz4 xorg-x11-devel python3-pycairo-devel python3-pycairo-common-devel python311-pycairo-devel python3-cairo-devel cairo-tools cairo python-gobject python311-gobject-devel python311-gobject-Gdk python3-gobject-devel paramiko python311-paramiko |
+| pip | Cython xxhash python3-xxhash xxhash-devel matplotlib  |
+
+After installing those, I was able to get to the following error:
+
+```
+/usr/lib/python3.11/site-packages/setuptools/_distutils/cmd.py:66: SetuptoolsDeprecationWarning: setup.py install is deprecated.
+!!
+
+        ********************************************************************************
+        Please avoid running ``setup.py`` directly.
+        Instead, use pypa/build, pypa/installer, pypa/build or
+        other standards-based tools.
+
+        See https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html for details.
+        ********************************************************************************
+
+!!
+  self.initialize_options()
+/usr/lib/python3.11/site-packages/setuptools/_distutils/cmd.py:66: EasyInstallDeprecationWarning: easy_install command is deprecated.
+!!
+
+        ********************************************************************************
+        Please avoid running ``setup.py`` and ``easy_install``.
+        Instead, use pypa/build, pypa/installer, pypa/build or
+        other standards-based tools.
+
+        See https://github.com/pypa/setuptools/issues/917 for details.
+        ********************************************************************************
+
+!!
+  self.initialize_options()
+error: can't create or remove files in install directory
+
+The following error occurred while trying to add or remove files in the
+installation directory:
+
+    [Errno 13] Permission denied: '/usr/lib64/python3.11/site-packages/test-easy-install-31209.write-test'
+
+The installation directory you specified (via --install-dir, --prefix, or
+the distutils default setting) was:
+
+    /usr/lib64/python3.11/site-packages/
+```
+
+At that point (instead of reading the full error message), I created a directory for xpra and gave myself access like this:
+
+
+```
+sudo mkdir /usr/lib64/python3.11/site-packages/xpra/
+sudo chown $USER /usr/lib64/python3.11/site-packages/xpra/
+```
+
+Then I switched to the falling installation process:
+
+```
+python3 setup.py bdist_wheel
+python3 setup.py install_lib
+```
+
 ---
 
 # Usage
